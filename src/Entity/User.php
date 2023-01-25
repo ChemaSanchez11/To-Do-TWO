@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -36,6 +38,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $email;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Tarea::class, mappedBy="user")
+     */
+    private $tareas;
+
+    public function __construct()
+    {
+        $this->tareas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -119,5 +136,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+    // public function __toString(){
+        
+    //     $this->username = $username;
+        
+    //     return $this;
+    // }
+
+    /**
+     * @return Collection<int, Tarea>
+     */
+    public function getTareas(): Collection
+    {
+        return $this->tareas;
+    }
+
+    public function addTarea(Tarea $tarea): self
+    {
+        if (!$this->tareas->contains($tarea)) {
+            $this->tareas[] = $tarea;
+            $tarea->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTarea(Tarea $tarea): self
+    {
+        if ($this->tareas->removeElement($tarea)) {
+            // set the owning side to null (unless already changed)
+            if ($tarea->getUser() === $this) {
+                $tarea->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
