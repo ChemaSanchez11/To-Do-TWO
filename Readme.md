@@ -1,4 +1,4 @@
-TO-DO-TWO (nombre original)
+TO-DO-TWO
 
 Realizar una aplicación web en la que los usuarios puedan registrarse y tener su propia TO-DO list.
 
