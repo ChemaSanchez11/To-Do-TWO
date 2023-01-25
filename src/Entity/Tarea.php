@@ -37,11 +37,6 @@ class Tarea
      */
     private $visible;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tareas")
-     */
-    private $user;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -94,22 +89,5 @@ class Tarea
 
         return $this;
     }
-    public function __toString(){
-        
-        $this->username = $username;
-        
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
+    
 }
