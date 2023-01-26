@@ -17,7 +17,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 class TareaController extends AbstractController
 {
     /**
-     * @Route("/", name="app_tarea_index", methods={"GET"})
+     * @Route("/tarea", name="app_tarea", methods={"GET"})
      */
     public function index(TareaRepository $tareaRepository): Response
     {
@@ -47,9 +47,9 @@ class TareaController extends AbstractController
         
     }
     /**
-     * @Route("/tarea/borrar/[$id]", name="app_tarea_index", methods={"DELETE"})
+     * @Route("/tarea/borrar/{$id}", name="app_tarea", methods={"DELETE"})
      */
-    public function borrar(): Response
+    public function borrar(ManagerRegistry $doctrine ,$id): Response
     {
         $entityManager = $doctrine->getManager();
         $tarea = $entityManager->getRepository(Tarea::class)->find($id);
