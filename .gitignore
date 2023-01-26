@@ -19,3 +19,8 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 .idea/workspace.xml
+.idea/modules.xml
+.idea/php.xml
+.idea/phpunit.xml
+.idea/To-Do-TWO.iml
+.idea/vcs.xml

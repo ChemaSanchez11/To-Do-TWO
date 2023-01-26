@@ -75,7 +75,7 @@ const FormularioTarea = () => {
     }
     
   return (
-    <div>
+    <div className="m-auto">
         <Form>
         <Form.Group className='mb-3' controlId="formInput">
             <Form.Label>Tarea</Form.Label>
