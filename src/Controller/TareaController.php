@@ -2,46 +2,69 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Repository\TareaRepository;
 use App\Entity\Tarea;
+use App\Form\TareaType;
+use App\Repository\TareaRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Request;
-
-#[Route('/api')]
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\Common\Persistence\ManagerRegistry;
+/**
+ * @Route("/api")
+ */
 class TareaController extends AbstractController
 {
-    #[Route('/tareas', name: 'app_tarea')]
+    /**
+     * @Route("/", name="app_tarea_index", methods={"GET"})
+     */
+    public function index(TareaRepository $tareaRepository): Response
+    {
+        // return $this->render('tarea/index.html.twig', [
+        //     'tareas' => $tareaRepository->findAll(),
+            
+            
+        // ]);
+        $tareas = [];
+        foreach ($tareaRepository->findAll() as $tarea){
+            $t1 = [];
+            $t1['texto'] = $tarea->getTexto();
+            $t1['fecha'] = $tarea->getFecha();
+            $t1['finalizada'] = $tarea->isFinalizada();
+            $t1['visible'] = $tarea->isVisible();
 
-    public function Tareas(Request $Request , TareaRepository $repository) {
-
-        $row = $repository->findAll();
-        return $this->json($row);
-    }
-
-    #[Route('/tareas/nueva', name: 'app_tarea_nueva', methods:['POST'])]
-
-    public function NuevaTarea(Request $request , TareaRepository $repository, ManagerRegistry $doctrine) {
-
-        $entityManager = $doctrine->getManager();
-
-
-        $tarea = new Tarea();
-        $data = json_decode($request->getContent(), true);
-        $tarea->setTexto($data["texto"]);
-        $datetime = new \DateTime();
-        $tarea->setFecha($datetime);
-        $tarea->setFinalizada(0);
-        $tarea->setVisible(0);
-
-        $entityManager->persist($tarea);
-        $entityManager->flush();
+            $tareas[]=$t1;
+        }
         
-        $response = new Response();
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+        // for($i=0;$i<$tareaRepository->findAll().count();$i++){
+        //     $t1[$i]= $tareaRepsository->findAll()[$i];
 
+
+        // }
+
+        return new JsonResponse($tareas);
+        
+    }
+    /**
+     * @Route("/tarea/borrar/[$id]", name="app_tarea_index", methods={"DELETE"})
+     */
+    public function borrar(): Response
+    {
+        $entityManager = $doctrine->getManager();
+        $tarea = $entityManager->getRepository(Tarea::class)->find($id);
+
+        if (!$tarea) {
+            throw $this->createNotFoundException(
+                'No existe esa tarea con id: '.$id
+            );
+        }else{
+            $entityManager->remove($tarea);
+            $entityManager->flush();
+        }
+        $response = new Response;
+        $response->setStatusCode(Response::HTTP_OK);
+
+        return $response->send();
     }
 }
