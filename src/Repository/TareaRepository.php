@@ -38,7 +38,6 @@ class TareaRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
 //    /**
 //     * @return Tarea[] Returns an array of Tarea objects
 //     */
