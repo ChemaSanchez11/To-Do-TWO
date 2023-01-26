@@ -30,8 +30,6 @@ class TareaController extends AbstractController
 
         $tarea = new Tarea();
         $data = json_decode($request->getContent(), true);
-
-        var_dump($data);
         $tarea->setTexto($data["texto"]);
         $datetime = new \DateTime();
         $tarea->setFecha($datetime);
