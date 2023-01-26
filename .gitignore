@@ -23,3 +23,5 @@
 .idea/php.xml
 .idea/To-Do-TWO.iml
 .idea/vcs.xml
+.idea/phpunit.xml
+.idea/workspace.xml
