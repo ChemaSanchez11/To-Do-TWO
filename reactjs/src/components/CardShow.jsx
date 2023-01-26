@@ -4,62 +4,21 @@ import {Button} from 'react-bootstrap';
 // import getJSON from '../helpers/getJSON';
 
 // Variables
-const initialStateTareas = [];
 const url = "http://localhost:3500/tareas/"
 
-const CardShow = () => {
+const CardShow = ({ tareas , setTareas }) => {
     // Estados
-    const [tareas, setTareas] = useState(initialStateTareas);
+
     // Efectos
     useEffect(() => {
-        traerJSON();
     }, [tareas])
 
 
-    // Funciones
-    const traerJSON = () => {
-        let json = [
-            {
-                id: '1',
-                tarea: 'dfgdg',
-                importancia: 5
-            },
-            {
-                id: '2',
-                tarea: 'sdfsefds',
-                importancia: 5
-            },
-            {
-                id: '3',
-                tarea: 'ghfdfgh',
-                importancia: 5
-            },
-        ]
-        setTareas(json)
-    }
-
     const handleEliminar = async (e) => {
         e.preventDefault();
+        const id = e.target.dataset.id;
+        setTareas(tareas.filter(tarea => (tarea.id != id)));
 
-        try {
-            const options = {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                }
-            };
-            const urleliminar = url + e.target.dataset.id;
-            const enlace = await fetch(urleliminar, options);
-            const json = await enlace.json();
-
-            if (!enlace.ok) throw {status: enlace.status, message: enlace.statusText};
-
-            localStorage.setItem(e.target.dataset.tarea, "Importancia: " + e.target.dataset.importancia);
-
-        } catch (error) {
-            const miError = error.statusText || "Error al cargar los datos";
-            console.log(miError);
-        }
     }
 
     const handleCambiarForm = (e) => {

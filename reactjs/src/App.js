@@ -7,23 +7,38 @@ import FormularioTarea from "./components/FormularioTarea";
 import {Col, Row} from "react-bootstrap";
 
 import CardShow from "./components/CardShow";
+import uuid from "react-uuid";
 
-const initStateConectado = false;
+const initialStateTareas = [
+    {
+        id: uuid(),
+        tarea: 'dfgdg',
+        importancia: 5
+    },
+    {
+        id: uuid(),
+        tarea: 'sdfsefds',
+        importancia: 5
+    },
+    {
+        id: uuid(),
+        tarea: 'ghfdfgh',
+        importancia: 5
+    },
+];
 
 function App() {
 
-    const [conectado, setConectado] = useState(initStateConectado);
-
-    getTest().then(r => console.log(r));
+    const [tareas, setTareas] = useState(initialStateTareas);
 
     return (
         <Row className="App row">
 
             <Col md={6} className="Formulario d-flex">
-                <FormularioTarea></FormularioTarea>
+                <FormularioTarea tareas={tareas} setTareas={setTareas}></FormularioTarea>
             </Col>
-            <Col md={6}  className="Tareas">
-                <CardShow></CardShow>
+            <Col md={6} className="Tareas">
+                <CardShow tareas={tareas} setTareas={setTareas}></CardShow>
             </Col>
         </Row>
     );

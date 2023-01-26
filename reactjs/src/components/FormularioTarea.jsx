@@ -1,11 +1,12 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import uuid from "react-uuid";
 
 // Variables
 const url = "http://localhost:3500/tareas/"
 
-const FormularioTarea = () => {
+const FormularioTarea = ( { tareas , setTareas }) => {
 
     // Funciones
     const handleEnviarTarea = async (e) =>{
@@ -13,65 +14,74 @@ const FormularioTarea = () => {
 
         const $nombreTarea = document.querySelector(".tareanombre");
         const $importanciaTarea = document.querySelector(".importancia");
-
         const nuevaTarea = {
+            id: uuid(),
             tarea: $nombreTarea.value,
             importancia: $importanciaTarea.value
         }
-        try {
-            const options = {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                },
-                body: JSON.stringify(nuevaTarea),
-            }
+        // try {
+        //     const options = {
+        //         method: "POST",
+        //         headers: {
+        //         "Content-Type": "application/json; charset=utf-8",
+        //         },
+        //         body: JSON.stringify(nuevaTarea),
+        //     }
+        //
+        //     const enlace = await fetch(url, options),
+        //     json = await enlace.json();
+        //
+        //     if (enlace.ok) {
+        //         console.log("Se ha añadido una nueva tarea");
+        //     } else throw {
+        //         status: enlace.status,
+        //         statusText: enlace.statusText
+        //     };
+        // } catch (error) {
+        //     console.error(error.statusText);
+        // }
 
-            const enlace = await fetch(url, options),
-            json = await enlace.json();
-
-            if (enlace.ok) {
-                console.log("Se ha añadido una nueva tarea");
-            } else throw {
-                status: enlace.status,
-                statusText: enlace.statusText
-            };
-        } catch (error) {
-            console.error(error.statusText);
-        }
+        const newTareas= [ ...tareas ];
+        newTareas.push(nuevaTarea);
+        setTareas(newTareas)
     }
 
     const handleModificarTarea = async (e) =>{
         e.preventDefault();
-        try {
-            const options = {
-                method : "PUT",
-                headers : {
-                    "Content-Type": "application/json; charset=utf-8",
-                },
-                body: JSON.stringify({
-                    tarea: document.querySelector(".tareanombre").value,
-                    importancia: document.querySelector(".importancia").value,
-                }),
-            };
 
-            const urlModificar = url + e.target.dataset.id;
-            const enlace = await fetch(urlModificar, options);
+        const id = e.target.dataset.id;
 
-            const json = await enlace.json();
-            if(!enlace.ok) throw { status: enlace.status, message: enlace.statusText};
-
-            document.querySelector(".modificar").setAttribute("class","modificar d-none btn btn-primary");
-
-            document.querySelector(".enviar").setAttribute("class","enviar d-inline btn btn-primary");
-
-            document.querySelector(".tareanombre").value = "";
-            document.querySelector(".importancia").value = 1;
-
-        } catch (error) {
-            const miError = error.statusText || "Error al cargar los datos";
-            console.log(miError);
-        }
+        // tareas.filter(tarea => )
+        
+        // try {
+        //     const options = {
+        //         method : "PUT",
+        //         headers : {
+        //             "Content-Type": "application/json; charset=utf-8",
+        //         },
+        //         body: JSON.stringify({
+        //             tarea: document.querySelector(".tareanombre").value,
+        //             importancia: document.querySelector(".importancia").value,
+        //         }),
+        //     };
+        //
+        //     const urlModificar = url + e.target.dataset.id;
+        //     const enlace = await fetch(urlModificar, options);
+        //
+        //     const json = await enlace.json();
+        //     if(!enlace.ok) throw { status: enlace.status, message: enlace.statusText};
+        //
+        //     document.querySelector(".modificar").setAttribute("class","modificar d-none btn btn-primary");
+        //
+        //     document.querySelector(".enviar").setAttribute("class","enviar d-inline btn btn-primary");
+        //
+        //     document.querySelector(".tareanombre").value = "";
+        //     document.querySelector(".importancia").value = 1;
+        //
+        // } catch (error) {
+        //     const miError = error.statusText || "Error al cargar los datos";
+        //     console.log(miError);
+        // }
     }
     
   return (
