@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MainController extends AbstractController
 {
@@ -13,8 +14,12 @@ class MainController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
-        ]);
+//        return $this->render('main/index.html.twig', [
+//            'controller_name' => 'MainController',
+//        ]);
+
+        $data = array('name' => 'John', 'age' => 30);
+
+        return new JsonResponse($data);
     }
 }
