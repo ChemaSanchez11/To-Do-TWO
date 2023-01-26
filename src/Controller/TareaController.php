@@ -10,12 +10,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
+
 #[Route('/api')]
 class TareaController extends AbstractController
 {
     #[Route('/tareas', name: 'app_tarea')]
 
-    public function Tareas(Request $Request , TareaRepository $repository) {
+    public function tareas(Request $Request , TareaRepository $repository) {
 
         $row = $repository->findAll();
         return $this->json($row);
@@ -23,7 +24,7 @@ class TareaController extends AbstractController
 
     #[Route('/tareas/nueva', name: 'app_tarea_nueva', methods:['POST'])]
 
-    public function NuevaTarea(Request $request , TareaRepository $repository, ManagerRegistry $doctrine) {
+    public function nueva(Request $request , TareaRepository $repository, ManagerRegistry $doctrine) {
 
         $entityManager = $doctrine->getManager();
 
@@ -39,6 +40,28 @@ class TareaController extends AbstractController
         $entityManager->persist($tarea);
         $entityManager->flush();
         
+        $response = new Response();
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+
+    }
+    #[Route('/tareas/editar/{id}', name: 'app_tarea_editar', methods:['POST'])]
+
+    public function editar( $id, Request $request , TareaRepository $repository, ManagerRegistry $doctrine) {
+
+        $entityManager = $doctrine->getManager();
+        $tarea = $repository->find($id);
+
+        if (!$tarea) {
+            throw $this->createNotFoundException(
+                'No tarea found for id '.$id
+            );
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $tarea->setTexto($data["texto"]);
+        
+        $entityManager->flush();
         $response = new Response();
         $response->setStatusCode(Response::HTTP_OK);
         return $response;
