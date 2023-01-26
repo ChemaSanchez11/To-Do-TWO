@@ -10,8 +10,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\Common\Persistence\ManagerRegistry;
 /**
- * @Route("/tarea")
+ * @Route("/api")
  */
 class TareaController extends AbstractController
 {
@@ -45,67 +46,25 @@ class TareaController extends AbstractController
         return new JsonResponse($tareas);
         
     }
-
     /**
-     * @Route("/new", name="app_tarea_new", methods={"GET", "POST"})
+     * @Route("/tarea/borrar/[$id]", name="app_tarea_index", methods={"DELETE"})
      */
-    public function new(Request $request, TareaRepository $tareaRepository): Response
+    public function borrar(): Response
     {
-        $tarea = new Tarea();
-        $form = $this->createForm(TareaType::class, $tarea);
-        $form->handleRequest($request);
+        $entityManager = $doctrine->getManager();
+        $tarea = $entityManager->getRepository(Tarea::class)->find($id);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $tareaRepository->add($tarea, true);
-
-            return $this->redirectToRoute('app_tarea_index', [], Response::HTTP_SEE_OTHER);
+        if (!$tarea) {
+            throw $this->createNotFoundException(
+                'No existe esa tarea con id: '.$id
+            );
+        }else{
+            $entityManager->remove($tarea);
+            $entityManager->flush();
         }
+        $response = new Response;
+        $response->setStatusCode(Response::HTTP_OK);
 
-        return $this->renderForm('tarea/new.html.twig', [
-            'tarea' => $tarea,
-            'form' => $form,
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="app_tarea_show", methods={"GET"})
-     */
-    public function show(Tarea $tarea): Response
-    {
-        return $this->render('tarea/show.html.twig', [
-            'tarea' => $tarea,
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/edit", name="app_tarea_edit", methods={"GET", "POST"})
-     */
-    public function edit(Request $request, Tarea $tarea, TareaRepository $tareaRepository): Response
-    {
-        $form = $this->createForm(TareaType::class, $tarea);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $tareaRepository->add($tarea, true);
-
-            return $this->redirectToRoute('app_tarea_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('tarea/edit.html.twig', [
-            'tarea' => $tarea,
-            'form' => $form,
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="app_tarea_delete", methods={"POST"})
-     */
-    public function delete(Request $request, Tarea $tarea, TareaRepository $tareaRepository): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$tarea->getId(), $request->request->get('_token'))) {
-            $tareaRepository->remove($tarea, true);
-        }
-
-        return $this->redirectToRoute('app_tarea_index', [], Response::HTTP_SEE_OTHER);
+        return $response->send();
     }
 }
