@@ -1,4 +1,5 @@
 import './App.css';
+import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useState} from "react";
 import Tareas from "./components/Tareas";
@@ -8,7 +9,6 @@ import {Col, Row} from "react-bootstrap";
 
 import CardShow from "./components/CardShow";
 import uuid from "react-uuid";
-
 const initialStateTareas = [
     {
         id: uuid(),
